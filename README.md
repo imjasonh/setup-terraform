@@ -1,74 +1,54 @@
-# setup-terraform
+# setup-opentofu
 
-[![Continuous Integration](https://github.com/hashicorp/setup-terraform/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/hashicorp/setup-terraform/actions/workflows/continuous-integration.yml)
-[![Setup Terraform](https://github.com/hashicorp/setup-terraform/actions/workflows/setup-terraform.yml/badge.svg)](https://github.com/hashicorp/setup-terraform/actions/workflows/setup-terraform.yml)
+[![Continuous Integration](https://github.com/opentofu/setup-opentofu/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/opentofu/setup-opentofu/actions/workflows/continuous-integration.yml)
+[![Setup OpenTofu](https://github.com/opentofu/setup-opentofu/actions/workflows/setup-opentofu.yml/badge.svg)](https://github.com/opentofu/setup-opentofu/actions/workflows/setup-opentofu.yml)
 
-The `hashicorp/setup-terraform` action is a JavaScript action that sets up Terraform CLI in your GitHub Actions workflow by:
+The `opentofu/setup-opentofu` action is a JavaScript action that sets up OpenTofu CLI in your GitHub Actions workflow by:
 
-- Downloading a specific version of Terraform CLI and adding it to the `PATH`.
-- Configuring the [Terraform CLI configuration file](https://www.terraform.io/docs/commands/cli-config.html) with a Terraform Cloud/Enterprise hostname and API token.
-- Installing a wrapper script to wrap subsequent calls of the `terraform` binary and expose its STDOUT, STDERR, and exit code as outputs named `stdout`, `stderr`, and `exitcode` respectively. (This can be optionally skipped if subsequent steps in the same job do not need to access the results of Terraform commands.)
+- Downloading a specific version of OpenTofu CLI and adding it to the `PATH`.
+- Installing a wrapper script to wrap subsequent calls of the `opentofu` binary and expose its STDOUT, STDERR, and exit code as outputs named `stdout`, `stderr`, and `exitcode` respectively. (This can be optionally skipped if subsequent steps in the same job do not need to access the results of OpenTofu commands.)
 
-After you've used the action, subsequent steps in the same job can run arbitrary Terraform commands using [the GitHub Actions `run` syntax](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun). This allows most Terraform commands to work exactly like they do on your local command line.
+After you've used the action, subsequent steps in the same job can run arbitrary OpenTofu commands using [the GitHub Actions `run` syntax](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun). This allows most OpenTofu commands to work exactly like they do on your local command line.
 
 ## Usage
 
 This action can be run on `ubuntu-latest`, `windows-latest`, and `macos-latest` GitHub Actions runners. When running on `windows-latest` the shell should be set to Bash.
 
-The default configuration installs the latest version of Terraform CLI and installs the wrapper script to wrap subsequent calls to the `terraform` binary:
+The default configuration installs the latest version of OpenTofu CLI and installs the wrapper script to wrap subsequent calls to the `opentofu` binary:
 
 ```yaml
 steps:
-- uses: hashicorp/setup-terraform@v2
+- uses: opentofu/setup-opentofu@v2
 ```
 
-A specific version of Terraform CLI can be installed:
+A specific version of OpenTofu CLI can be installed:
 
 ```yaml
 steps:
-- uses: hashicorp/setup-terraform@v2
+- uses: opentofu/setup-opentofu@v2
   with:
-    terraform_version: 1.1.7
+    opentofu_version: 1.1.7
 ```
 
-Credentials for Terraform Cloud ([app.terraform.io](https://app.terraform.io/)) can be configured:
+The wrapper script installation can be skipped by setting the `opentofu_wrapper` variable to `false`:
 
 ```yaml
 steps:
-- uses: hashicorp/setup-terraform@v2
+- uses: opentofu/setup-opentofu@v2
   with:
-    cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-```
-
-Credentials for Terraform Enterprise (TFE) can be configured:
-
-```yaml
-steps:
-- uses: hashicorp/setup-terraform@v2
-  with:
-    cli_config_credentials_hostname: 'terraform.example.com'
-    cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-```
-
-The wrapper script installation can be skipped by setting the `terraform_wrapper` variable to `false`:
-
-```yaml
-steps:
-- uses: hashicorp/setup-terraform@v2
-  with:
-    terraform_wrapper: false
+    opentofu_wrapper: false
 ```
 
 Subsequent steps can access outputs when the wrapper script is installed:
 
 ```yaml
 steps:
-- uses: hashicorp/setup-terraform@v2
+- uses: opentofu/setup-opentofu@v2
 
-- run: terraform init
+- run: opentofu init
 
 - id: plan
-  run: terraform plan -no-color
+  run: opentofu plan -no-color
 
 - run: echo ${{ steps.plan.outputs.stdout }}
 - run: echo ${{ steps.plan.outputs.stderr }}
@@ -91,36 +71,36 @@ permissions:
   pull-requests: write
 steps:
 - uses: actions/checkout@v3
-- uses: hashicorp/setup-terraform@v2
+- uses: opentofu/setup-opentofu@v2
 
-- name: Terraform fmt
+- name: OpenTofu fmt
   id: fmt
-  run: terraform fmt -check
+  run: opentofu fmt -check
   continue-on-error: true
 
-- name: Terraform Init
+- name: OpenTofu Init
   id: init
-  run: terraform init
+  run: opentofu init
 
-- name: Terraform Validate
+- name: OpenTofu Validate
   id: validate
-  run: terraform validate -no-color
+  run: opentofu validate -no-color
 
-- name: Terraform Plan
+- name: OpenTofu Plan
   id: plan
-  run: terraform plan -no-color
+  run: opentofu plan -no-color
   continue-on-error: true
 
 - uses: actions/github-script@v6
   if: github.event_name == 'pull_request'
   env:
-    PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+    PLAN: "opentofu\n${{ steps.plan.outputs.stdout }}"
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     script: |
-      const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-      #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-      #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+      const output = `#### OpenTofu Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+      #### OpenTofu Initialization ⚙️\`${{ steps.init.outcome }}\`
+      #### OpenTofu Validation 🤖\`${{ steps.validate.outcome }}\`
       <details><summary>Validation Output</summary>
 
       \`\`\`\n
@@ -129,7 +109,7 @@ steps:
 
       </details>
 
-      #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+      #### OpenTofu Plan 📖\`${{ steps.plan.outcome }}\`
 
       <details><summary>Show Plan</summary>
 
@@ -159,30 +139,30 @@ permissions:
   pull-requests: write
 steps:
 - uses: actions/checkout@v3
-- uses: hashicorp/setup-terraform@v2
+- uses: opentofu/setup-opentofu@v2
 
-- name: Terraform fmt
+- name: OpenTofu fmt
   id: fmt
-  run: terraform fmt -check
+  run: opentofu fmt -check
   continue-on-error: true
 
-- name: Terraform Init
+- name: OpenTofu Init
   id: init
-  run: terraform init
+  run: opentofu init
 
-- name: Terraform Validate
+- name: OpenTofu Validate
   id: validate
-  run: terraform validate -no-color
+  run: opentofu validate -no-color
 
-- name: Terraform Plan
+- name: OpenTofu Plan
   id: plan
-  run: terraform plan -no-color
+  run: opentofu plan -no-color
   continue-on-error: true
 
 - uses: actions/github-script@v6
   if: github.event_name == 'pull_request'
   env:
-    PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+    PLAN: "opentofu\n${{ steps.plan.outputs.stdout }}"
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     script: |
@@ -193,13 +173,13 @@ steps:
         issue_number: context.issue.number,
       })
       const botComment = comments.find(comment => {
-        return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+        return comment.user.type === 'Bot' && comment.body.includes('OpenTofu Format and Style')
       })
 
       // 2. Prepare format of the comment
-      const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-      #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-      #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+      const output = `#### OpenTofu Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+      #### OpenTofu Initialization ⚙️\`${{ steps.init.outcome }}\`
+      #### OpenTofu Validation 🤖\`${{ steps.validate.outcome }}\`
       <details><summary>Validation Output</summary>
 
       \`\`\`\n
@@ -208,7 +188,7 @@ steps:
 
       </details>
 
-      #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+      #### OpenTofu Plan 📖\`${{ steps.plan.outcome }}\`
 
       <details><summary>Show Plan</summary>
 
@@ -242,44 +222,20 @@ steps:
 
 The action supports the following inputs:
 
-- `cli_config_credentials_hostname` - (optional) The hostname of a Terraform Cloud/Enterprise instance to
-   place within the credentials block of the Terraform CLI configuration file. Defaults to `app.terraform.io`.
-- `cli_config_credentials_token` - (optional) The API token for a Terraform Cloud/Enterprise instance to
-   place within the credentials block of the Terraform CLI configuration file.
-- `terraform_version` - (optional) The version of Terraform CLI to install. Instead of a full version string,
+- `opentofu_version` - (optional) The version of OpenTofu CLI to install. Instead of a full version string,
    you can also specify a constraint string (see [Semver Ranges](https://www.npmjs.com/package/semver#ranges)
    for available range specifications). Examples are: `<1.2.0`, `~1.1.0`, `1.1.7` (all three installing
    the latest available `1.1` version). Prerelease versions can be specified and a range will stay within the
    given tag such as `beta` or `rc`. If no version is given, it will default to `latest`.
-- `terraform_wrapper` - (optional) Whether to install a wrapper to wrap subsequent calls of
-   the `terraform` binary and expose its STDOUT, STDERR, and exit code as outputs
+- `opentofu_wrapper` - (optional) Whether to install a wrapper to wrap subsequent calls of
+   the `opentofu` binary and expose its STDOUT, STDERR, and exit code as outputs
    named `stdout`, `stderr`, and `exitcode` respectively. Defaults to `true`.
 
 ## Outputs
 
-This action does not configure any outputs directly. However, when you set the `terraform_wrapper` input
-to `true`, the following outputs are available for subsequent steps that call the `terraform` binary:
+This action does not configure any outputs directly. However, when you set the `opentofu_wrapper` input
+to `true`, the following outputs are available for subsequent steps that call the `opentofu` binary:
 
-- `stdout` - The STDOUT stream of the call to the `terraform` binary.
-- `stderr` - The STDERR stream of the call to the `terraform` binary.
-- `exitcode` - The exit code of the call to the `terraform` binary.
-
-## License
-
-[Mozilla Public License v2.0](LICENSE)
-
-## Code of Conduct
-
-[Code of Conduct](CODE_OF_CONDUCT.md)
-
-## Experimental Status
-
-By using the software in this repository (the "Software"), you acknowledge that: (1) the Software is still in development, may change, and has not been released as a commercial product by HashiCorp and is not currently supported in any way by HashiCorp; (2) the Software is provided on an "as-is" basis, and may include bugs, errors, or other issues;  (3) the Software is NOT INTENDED FOR PRODUCTION USE, use of the Software may result in unexpected results, loss of data, or other unexpected results, and HashiCorp disclaims any and all liability resulting from use of the Software; and (4) HashiCorp reserves all rights to make all decisions about the features, functionality and commercial release (or non-release) of the Software, at any time and without any obligation or liability whatsoever.
-
-## Contributing
-
-### License Headers
-
-All source code files (excluding autogenerated files like `package.json`, prose, and files excluded in [.copywrite.hcl](.copywrite.hcl)) must have a license header at the top.
-
-This can be autogenerated by installing the HashiCorp [`copywrite`](https://github.com/hashicorp/copywrite#getting-started) tool and running `copywrite headers` in the root of the repository.
+- `stdout` - The STDOUT stream of the call to the `opentofu` binary.
+- `stderr` - The STDERR stream of the call to the `opentofu` binary.
+- `exitcode` - The exit code of the call to the `opentofu` binary.

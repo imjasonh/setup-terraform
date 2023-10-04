@@ -9,10 +9,10 @@ const core = require('@actions/core');
 const { exec } = require('@actions/exec');
 
 const OutputListener = require('./lib/output-listener');
-const pathToCLI = require('./lib/terraform-bin');
+const pathToCLI = require('./lib/opentofu-bin');
 
 async function checkTerraform () {
-  // Setting check to `true` will cause `which` to throw if terraform isn't found
+  // Setting check to `true` will cause `which` to throw if opentofu isn't found
   const check = true;
   return io.which(pathToCLI, check);
 }
@@ -29,7 +29,7 @@ async function checkTerraform () {
     stderr: stderr.listener
   };
 
-  // Execute terraform and capture output
+  // Execute opentofu and capture output
   const args = process.argv.slice(2);
   const options = {
     listeners,

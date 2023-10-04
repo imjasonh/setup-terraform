@@ -1,20 +1,19 @@
 {
-  "name": "setup-terraform",
+  "name": "setup-opentofu",
   "version": "2.0.2",
-  "description": "Setup Terraform CLI for GitHub Actions",
+  "description": "Setup OpenTofu CLI for GitHub Actions",
   "license": "MPL-2.0",
-  "publisher": "hashicorp",
+  "publisher": "opentofu",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hashicorp/setup-terraform.git"
+    "url": "https://github.com/opentofu/setup-opentofu.git"
   },
   "scripts": {
     "test": "semistandard --env jest && jest --coverage",
     "lint": "semistandard --env jest --fix",
-    "build": "ncc build wrapper/terraform.js --out wrapper/dist && ncc build index.js --out dist",
-    "prepare": "husky install",
-    "format-check": "echo \"unimplemented for actions/reusable-workflows basic-validation\""
+    "build": "ncc build wrapper/opentofu.js --out wrapper/dist && ncc build index.js --out dist",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",

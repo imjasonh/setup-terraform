@@ -19,7 +19,7 @@ const tc = require('@actions/tool-cache');
 const nock = require('nock');
 
 const json = require('./index.json');
-const setup = require('../lib/setup-terraform');
+const setup = require('../lib/setup-opentofu');
 
 // Overwrite defaults
 // core.debug = jest
@@ -44,7 +44,7 @@ describe('Setup Terraform', () => {
 
   test('gets specific version and adds token and hostname on linux, amd64', async () => {
     const version = '0.1.1';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -70,7 +70,7 @@ describe('Setup Terraform', () => {
       .mockReturnValue('amd64');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     const versionObj = await setup();
@@ -78,15 +78,15 @@ describe('Setup Terraform', () => {
 
     // downloaded CLI has been added to path
     expect(core.addPath).toHaveBeenCalled();
-    // expect credentials are in ${HOME}.terraformrc
-    const creds = await fs.readFile(`${process.env.HOME}/.terraformrc`, { encoding: 'utf8' });
+    // expect credentials are in ${HOME}.opentofurc
+    const creds = await fs.readFile(`${process.env.HOME}/.opentofurc`, { encoding: 'utf8' });
     expect(creds.indexOf(credentialsHostname)).toBeGreaterThan(-1);
     expect(creds.indexOf(credentialsToken)).toBeGreaterThan(-1);
   });
 
   test('gets specific version and adds token and hostname on windows, 386', async () => {
     const version = '0.1.1';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -114,7 +114,7 @@ describe('Setup Terraform', () => {
       .mockReturnValue('386');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     const versionObj = await setup();
@@ -123,15 +123,15 @@ describe('Setup Terraform', () => {
     // downloaded CLI has been added to path
     expect(core.addPath).toHaveBeenCalled();
 
-    // expect credentials are in ${HOME}.terraformrc
-    const creds = await fs.readFile(`${process.env.HOME}/terraform.rc`, { encoding: 'utf8' });
+    // expect credentials are in ${HOME}.opentofurc
+    const creds = await fs.readFile(`${process.env.HOME}/opentofu.rc`, { encoding: 'utf8' });
     expect(creds.indexOf(credentialsHostname)).toBeGreaterThan(-1);
     expect(creds.indexOf(credentialsToken)).toBeGreaterThan(-1);
   });
 
   test('gets latest version and adds token and hostname on linux, amd64', async () => {
     const version = 'latest';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -157,7 +157,7 @@ describe('Setup Terraform', () => {
       .mockReturnValue('amd64');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     const versionObj = await setup();
@@ -166,15 +166,15 @@ describe('Setup Terraform', () => {
     // downloaded CLI has been added to path
     expect(core.addPath).toHaveBeenCalled();
 
-    // expect credentials are in ${HOME}.terraformrc
-    const creds = await fs.readFile(`${process.env.HOME}/.terraformrc`, { encoding: 'utf8' });
+    // expect credentials are in ${HOME}.opentofurc
+    const creds = await fs.readFile(`${process.env.HOME}/.opentofurc`, { encoding: 'utf8' });
     expect(creds.indexOf(credentialsHostname)).toBeGreaterThan(-1);
     expect(creds.indexOf(credentialsToken)).toBeGreaterThan(-1);
   });
 
   test('gets latest version matching specification adds token and hostname on linux, amd64', async () => {
     const version = '<0.10.0';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -200,7 +200,7 @@ describe('Setup Terraform', () => {
       .mockReturnValue('amd64');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     const versionObj = await setup();
@@ -209,15 +209,15 @@ describe('Setup Terraform', () => {
     // downloaded CLI has been added to path
     expect(core.addPath).toHaveBeenCalled();
 
-    // expect credentials are in ${HOME}.terraformrc
-    const creds = await fs.readFile(`${process.env.HOME}/.terraformrc`, { encoding: 'utf8' });
+    // expect credentials are in ${HOME}.opentofurc
+    const creds = await fs.readFile(`${process.env.HOME}/.opentofurc`, { encoding: 'utf8' });
     expect(creds.indexOf(credentialsHostname)).toBeGreaterThan(-1);
     expect(creds.indexOf(credentialsToken)).toBeGreaterThan(-1);
   });
 
   test('gets latest version matching tilde range patch', async () => {
     const version = '~0.1.0';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -243,7 +243,7 @@ describe('Setup Terraform', () => {
       .mockReturnValue('amd64');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     const versionObj = await setup();
@@ -251,15 +251,15 @@ describe('Setup Terraform', () => {
 
     // downloaded CLI has been added to path
     expect(core.addPath).toHaveBeenCalled();
-    // expect credentials are in ${HOME}.terraformrc
-    const creds = await fs.readFile(`${process.env.HOME}/.terraformrc`, { encoding: 'utf8' });
+    // expect credentials are in ${HOME}.opentofurc
+    const creds = await fs.readFile(`${process.env.HOME}/.opentofurc`, { encoding: 'utf8' });
     expect(creds.indexOf(credentialsHostname)).toBeGreaterThan(-1);
     expect(creds.indexOf(credentialsToken)).toBeGreaterThan(-1);
   });
 
   test('gets latest version matching tilde range minor', async () => {
     const version = '~0.1';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -285,7 +285,7 @@ describe('Setup Terraform', () => {
       .mockReturnValue('amd64');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     const versionObj = await setup();
@@ -293,15 +293,15 @@ describe('Setup Terraform', () => {
 
     // downloaded CLI has been added to path
     expect(core.addPath).toHaveBeenCalled();
-    // expect credentials are in ${HOME}.terraformrc
-    const creds = await fs.readFile(`${process.env.HOME}/.terraformrc`, { encoding: 'utf8' });
+    // expect credentials are in ${HOME}.opentofurc
+    const creds = await fs.readFile(`${process.env.HOME}/.opentofurc`, { encoding: 'utf8' });
     expect(creds.indexOf(credentialsHostname)).toBeGreaterThan(-1);
     expect(creds.indexOf(credentialsToken)).toBeGreaterThan(-1);
   });
 
   test('gets latest version matching tilde range minor', async () => {
     const version = '~0';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -327,7 +327,7 @@ describe('Setup Terraform', () => {
       .mockReturnValue('amd64');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     const versionObj = await setup();
@@ -335,15 +335,15 @@ describe('Setup Terraform', () => {
 
     // downloaded CLI has been added to path
     expect(core.addPath).toHaveBeenCalled();
-    // expect credentials are in ${HOME}.terraformrc
-    const creds = await fs.readFile(`${process.env.HOME}/.terraformrc`, { encoding: 'utf8' });
+    // expect credentials are in ${HOME}.opentofurc
+    const creds = await fs.readFile(`${process.env.HOME}/.opentofurc`, { encoding: 'utf8' });
     expect(creds.indexOf(credentialsHostname)).toBeGreaterThan(-1);
     expect(creds.indexOf(credentialsToken)).toBeGreaterThan(-1);
   });
 
   test('gets latest version matching .X range ', async () => {
     const version = '0.1.x';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -369,7 +369,7 @@ describe('Setup Terraform', () => {
       .mockReturnValue('amd64');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     const versionObj = await setup();
@@ -377,15 +377,15 @@ describe('Setup Terraform', () => {
 
     // downloaded CLI has been added to path
     expect(core.addPath).toHaveBeenCalled();
-    // expect credentials are in ${HOME}.terraformrc
-    const creds = await fs.readFile(`${process.env.HOME}/.terraformrc`, { encoding: 'utf8' });
+    // expect credentials are in ${HOME}.opentofurc
+    const creds = await fs.readFile(`${process.env.HOME}/.opentofurc`, { encoding: 'utf8' });
     expect(creds.indexOf(credentialsHostname)).toBeGreaterThan(-1);
     expect(creds.indexOf(credentialsToken)).toBeGreaterThan(-1);
   });
 
   test('gets latest version matching - range ', async () => {
     const version = '0.1.0 - 0.1.1';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -411,7 +411,7 @@ describe('Setup Terraform', () => {
       .mockReturnValue('amd64');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     const versionObj = await setup();
@@ -419,15 +419,15 @@ describe('Setup Terraform', () => {
 
     // downloaded CLI has been added to path
     expect(core.addPath).toHaveBeenCalled();
-    // expect credentials are in ${HOME}.terraformrc
-    const creds = await fs.readFile(`${process.env.HOME}/.terraformrc`, { encoding: 'utf8' });
+    // expect credentials are in ${HOME}.opentofurc
+    const creds = await fs.readFile(`${process.env.HOME}/.opentofurc`, { encoding: 'utf8' });
     expect(creds.indexOf(credentialsHostname)).toBeGreaterThan(-1);
     expect(creds.indexOf(credentialsToken)).toBeGreaterThan(-1);
   });
 
   test('fails when metadata cannot be downloaded', async () => {
     const version = 'latest';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -437,7 +437,7 @@ describe('Setup Terraform', () => {
       .mockReturnValueOnce(credentialsToken);
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(404);
 
     try {
@@ -449,7 +449,7 @@ describe('Setup Terraform', () => {
 
   test('fails when specific version cannot be found', async () => {
     const version = '0.9.9';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -459,7 +459,7 @@ describe('Setup Terraform', () => {
       .mockReturnValueOnce(credentialsToken);
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     try {
@@ -471,7 +471,7 @@ describe('Setup Terraform', () => {
 
   test('fails when CLI for os and architecture cannot be found', async () => {
     const version = '0.1.1';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -481,7 +481,7 @@ describe('Setup Terraform', () => {
       .mockReturnValueOnce(credentialsToken);
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     tc.downloadTool = jest
@@ -509,7 +509,7 @@ describe('Setup Terraform', () => {
 
   test('fails when CLI cannot be downloaded', async () => {
     const version = '0.1.1';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
 
     core.getInput = jest
@@ -519,7 +519,7 @@ describe('Setup Terraform', () => {
       .mockReturnValueOnce(credentialsToken);
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     tc.downloadTool = jest
@@ -547,14 +547,14 @@ describe('Setup Terraform', () => {
 
   test('installs wrapper on linux', async () => {
     const version = '0.1.1';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
     const wrapperPath = path.resolve([__dirname, '..', 'wrapper', 'dist', 'index.js'].join(path.sep));
 
     const ioMv = jest.spyOn(io, 'mv')
-      .mockImplementation(() => {});
+      .mockImplementation(() => { });
     const ioCp = jest.spyOn(io, 'cp')
-      .mockImplementation(() => {});
+      .mockImplementation(() => { });
 
     core.getInput = jest
       .fn()
@@ -580,25 +580,25 @@ describe('Setup Terraform', () => {
       .mockReturnValue('amd64');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     await setup();
 
-    expect(ioMv).toHaveBeenCalledWith(`file${path.sep}terraform`, `file${path.sep}terraform-bin`);
-    expect(ioCp).toHaveBeenCalledWith(wrapperPath, `file${path.sep}terraform`);
+    expect(ioMv).toHaveBeenCalledWith(`file${path.sep}opentofu`, `file${path.sep}opentofu-bin`);
+    expect(ioCp).toHaveBeenCalledWith(wrapperPath, `file${path.sep}opentofu`);
   });
 
   test('installs wrapper on windows', async () => {
     const version = '0.1.1';
-    const credentialsHostname = 'app.terraform.io';
+    const credentialsHostname = 'app.opentofu.io';
     const credentialsToken = 'asdfjkl';
     const wrapperPath = path.resolve([__dirname, '..', 'wrapper', 'dist', 'index.js'].join(path.sep));
 
     const ioMv = jest.spyOn(io, 'mv')
-      .mockImplementation(() => {});
+      .mockImplementation(() => { });
     const ioCp = jest.spyOn(io, 'cp')
-      .mockImplementation(() => {});
+      .mockImplementation(() => { });
 
     core.getInput = jest
       .fn()
@@ -624,12 +624,12 @@ describe('Setup Terraform', () => {
       .mockReturnValue('386');
 
     nock('https://releases.hashicorp.com')
-      .get('/terraform/index.json')
+      .get('/opentofu/index.json')
       .reply(200, json);
 
     await setup();
 
-    expect(ioMv).toHaveBeenCalledWith(`file${path.sep}terraform.exe`, `file${path.sep}terraform-bin.exe`);
-    expect(ioCp).toHaveBeenCalledWith(wrapperPath, `file${path.sep}terraform`);
+    expect(ioMv).toHaveBeenCalledWith(`file${path.sep}opentofu.exe`, `file${path.sep}opentofu-bin.exe`);
+    expect(ioCp).toHaveBeenCalledWith(wrapperPath, `file${path.sep}opentofu`);
   });
 });

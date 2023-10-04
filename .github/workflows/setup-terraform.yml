@@ -11,95 +11,95 @@ defaults:
     shell: bash
 
 jobs:
-  terraform-versions:
+  opentofu-versions:
     name: 'Terraform Versions'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        terraform-versions: [0.11.14, latest]
+        opentofu-versions: [0.11.14, latest]
     steps:
     - name: Checkout
       uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
-    - name: Setup Terraform - ${{ matrix['terraform-versions'] }}
+    - name: Setup Terraform - ${{ matrix['opentofu-versions'] }}
       uses: ./
       with:
-        terraform_version: ${{ matrix['terraform-versions'] }}
+        opentofu_version: ${{ matrix['opentofu-versions'] }}
 
-    - name: Validate Teraform Version - ${{ matrix['terraform-versions'] }}
-      if: ${{ matrix['terraform-versions'] != 'latest' }}
-      run: terraform version | grep ${{ matrix['terraform-versions']}}
+    - name: Validate Teraform Version - ${{ matrix['opentofu-versions'] }}
+      if: ${{ matrix['opentofu-versions'] != 'latest' }}
+      run: opentofu version | grep ${{ matrix['opentofu-versions']}}
 
-    - name: Validate Teraform Version - ${{ matrix['terraform-versions'] }}
-      if: ${{ matrix['terraform-versions'] == 'latest' }}
-      run: terraform version | grep 'Terraform v'
+    - name: Validate Teraform Version - ${{ matrix['opentofu-versions'] }}
+      if: ${{ matrix['opentofu-versions'] == 'latest' }}
+      run: opentofu version | grep 'Terraform v'
 
-  terraform-versions-no-wrapper:
+  opentofu-versions-no-wrapper:
     name: 'Terraform Versions No Wrapper'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        terraform-versions: [0.11.14, latest]
+        opentofu-versions: [0.11.14, latest]
     steps:
     - name: Checkout
       uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
-    - name: Setup Terraform (no wrapper) - ${{ matrix['terraform-versions'] }}
+    - name: Setup Terraform (no wrapper) - ${{ matrix['opentofu-versions'] }}
       uses: ./
       with:
-        terraform_version: ${{ matrix['terraform-versions'] }}
-        terraform_wrapper: false
+        opentofu_version: ${{ matrix['opentofu-versions'] }}
+        opentofu_wrapper: false
 
-    - name: Validate Teraform Version - ${{ matrix['terraform-versions'] }}
-      if: ${{ matrix['terraform-versions'] != 'latest' }}
-      run: terraform version | grep ${{ matrix['terraform-versions']}}
+    - name: Validate Teraform Version - ${{ matrix['opentofu-versions'] }}
+      if: ${{ matrix['opentofu-versions'] != 'latest' }}
+      run: opentofu version | grep ${{ matrix['opentofu-versions']}}
 
-    - name: Validate Teraform Version - ${{ matrix['terraform-versions'] }}
-      if: ${{ matrix['terraform-versions'] == 'latest' }}
-      run: terraform version | grep 'Terraform v'
+    - name: Validate Teraform Version - ${{ matrix['opentofu-versions'] }}
+      if: ${{ matrix['opentofu-versions'] == 'latest' }}
+      run: opentofu version | grep 'Terraform v'
 
-  terraform-versions-constraints:
+  opentofu-versions-constraints:
     name: 'Terraform Versions Constraints'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        terraform-versions: [~0.12, 0.12.x, <0.13.0]
+        opentofu-versions: [~0.12, 0.12.x, <0.13.0]
     steps:
     - name: Checkout
       uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
-    - name: Setup Terraform - ${{ matrix['terraform-versions'] }}
+    - name: Setup Terraform - ${{ matrix['opentofu-versions'] }}
       uses: ./
       with:
-        terraform_version: ${{ matrix['terraform-versions'] }}
+        opentofu_version: ${{ matrix['opentofu-versions'] }}
 
-    - name: Validate Teraform Version - ${{ matrix['terraform-versions'] }}
-      run: terraform version | grep 'Terraform v0\.12'
+    - name: Validate Teraform Version - ${{ matrix['opentofu-versions'] }}
+      run: opentofu version | grep 'Terraform v0\.12'
 
-  terraform-versions-constraints-no-wrapper:
+  opentofu-versions-constraints-no-wrapper:
     name: 'Terraform Versions Constraints No Wrapper'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        terraform-versions: [~0.12, 0.12.x, <0.13.0]
+        opentofu-versions: [~0.12, 0.12.x, <0.13.0]
     steps:
     - name: Checkout
       uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
-    - name: Setup Terraform (no wrapper) - ${{ matrix['terraform-versions'] }}
+    - name: Setup Terraform (no wrapper) - ${{ matrix['opentofu-versions'] }}
       uses: ./
       with:
-        terraform_version: ${{ matrix['terraform-versions'] }}
-        terraform_wrapper: false
+        opentofu_version: ${{ matrix['opentofu-versions'] }}
+        opentofu_wrapper: false
 
-    - name: Validate Teraform Version - ${{ matrix['terraform-versions'] }}
-      run: terraform version | grep 'Terraform v0\.12'
+    - name: Validate Teraform Version - ${{ matrix['opentofu-versions'] }}
+      run: opentofu version | grep 'Terraform v0\.12'
 
-  terraform-credentials-cloud:
+  opentofu-credentials-cloud:
     name: 'Terraform Cloud Credentials'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -119,16 +119,16 @@ jobs:
     - name: Validate Terraform Credentials (Windows)
       if: runner.os == 'Windows'
       run: |
-        cat ${APPDATA}/terraform.rc | grep 'credentials "app.terraform.io"'
-        cat ${APPDATA}/terraform.rc | grep 'token = "${{ env.TF_CLOUD_API_TOKEN }}"'
+        cat ${APPDATA}/opentofu.rc | grep 'credentials "app.opentofu.io"'
+        cat ${APPDATA}/opentofu.rc | grep 'token = "${{ env.TF_CLOUD_API_TOKEN }}"'
 
     - name: Validate Teraform Credentials (Linux & macOS)
       if: runner.os != 'Windows'
       run: |
-        cat ${HOME}/.terraformrc | grep 'credentials "app.terraform.io"'
-        cat ${HOME}/.terraformrc | grep 'token = "${{ env.TF_CLOUD_API_TOKEN }}"'
+        cat ${HOME}/.opentofurc | grep 'credentials "app.opentofu.io"'
+        cat ${HOME}/.opentofurc | grep 'token = "${{ env.TF_CLOUD_API_TOKEN }}"'
 
-  terraform-credentials-enterprise:
+  opentofu-credentials-enterprise:
     name: 'Terraform Enterprise Credentials'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -143,22 +143,22 @@ jobs:
     - name: Setup Terraform
       uses: ./
       with:
-        cli_config_credentials_hostname: 'terraform.example.com'
+        cli_config_credentials_hostname: 'opentofu.example.com'
         cli_config_credentials_token: ${{ env.TF_CLOUD_API_TOKEN }}
 
     - name: Validate Terraform Credentials (Windows)
       if: runner.os == 'Windows'
       run: |
-        cat ${APPDATA}/terraform.rc | grep 'credentials "terraform.example.com"'
-        cat ${APPDATA}/terraform.rc | grep 'token = "${{ env.TF_CLOUD_API_TOKEN }}"'
+        cat ${APPDATA}/opentofu.rc | grep 'credentials "opentofu.example.com"'
+        cat ${APPDATA}/opentofu.rc | grep 'token = "${{ env.TF_CLOUD_API_TOKEN }}"'
 
     - name: Validate Teraform Credentials (Linux & macOS)
       if: runner.os != 'Windows'
       run: |
-        cat ${HOME}/.terraformrc | grep 'credentials "terraform.example.com"'
-        cat ${HOME}/.terraformrc | grep 'token = "${{ env.TF_CLOUD_API_TOKEN }}"'
+        cat ${HOME}/.opentofurc | grep 'credentials "opentofu.example.com"'
+        cat ${HOME}/.opentofurc | grep 'token = "${{ env.TF_CLOUD_API_TOKEN }}"'
 
-  terraform-credentials-none:
+  opentofu-credentials-none:
     name: 'Terraform No Credentials'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -174,14 +174,14 @@ jobs:
     - name: Validate Terraform Credentials (Windows)
       if: runner.os == 'Windows'
       run: |
-        [[ -f ${APPDATA}/terraform.rc ]] || exit 0
+        [[ -f ${APPDATA}/opentofu.rc ]] || exit 0
 
     - name: Validate Teraform Credentials (Linux & macOS)
       if: runner.os != 'Windows'
       run: |
-        [[ -f ${HOME}/.terraformrc ]] || exit 0
+        [[ -f ${HOME}/.opentofurc ]] || exit 0
 
-  terraform-arguments:
+  opentofu-arguments:
     name: 'Terraform Arguments'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -195,24 +195,24 @@ jobs:
       uses: ./
 
     - name: Check No Arguments
-      run: terraform || exit 0
+      run: opentofu || exit 0
 
     - name: Check Single Argument
-      run: terraform help || exit 0
+      run: opentofu help || exit 0
 
     - name: Check Single Argument Hyphen
-      run: terraform -help
+      run: opentofu -help
 
     - name: Check Single Argument Double Hyphen
-      run: terraform --help
+      run: opentofu --help
 
     - name: Check Single Argument Subcommand
-      run: terraform fmt -check
+      run: opentofu fmt -check
 
     - name: Check Multiple Arguments Subcommand
-      run: terraform fmt -check -list=true -no-color
+      run: opentofu fmt -check -list=true -no-color
 
-  terraform-arguments-no-wrapper:
+  opentofu-arguments-no-wrapper:
     name: 'Terraform Arguments No Wrapper'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -225,27 +225,27 @@ jobs:
     - name: Setup Terraform
       uses: ./
       with:
-        terraform_wrapper: false
+        opentofu_wrapper: false
 
     - name: Check No Arguments
-      run: terraform || exit 0
+      run: opentofu || exit 0
 
     - name: Check Single Argument
-      run: terraform help || exit 0
+      run: opentofu help || exit 0
 
     - name: Check Single Argument Hyphen
-      run: terraform -help
+      run: opentofu -help
 
     - name: Check Single Argument Double Hyphen
-      run: terraform --help
+      run: opentofu --help
 
     - name: Check Single Argument Subcommand
-      run: terraform fmt -check
+      run: opentofu fmt -check
 
     - name: Check Multiple Arguments Subcommand
-      run: terraform fmt -check -list=true -no-color
+      run: opentofu fmt -check -list=true -no-color
 
-  terraform-run-local:
+  opentofu-run-local:
     name: 'Terraform Run Local'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -263,22 +263,22 @@ jobs:
 
     - name: Terraform Init
       shell: bash
-      run: terraform init
+      run: opentofu init
 
     - name: Terraform Format
       shell: bash
-      run: terraform fmt -check
+      run: opentofu fmt -check
 
     - name: Terraform Plan
       id: plan
       shell: bash
-      run: terraform plan
+      run: opentofu plan
 
     - name: Print Terraform Plan
       shell: bash
       run: echo "${{ steps.plan.outputs.stdout }}"
 
-  terraform-run-local-no-wrapper:
+  opentofu-run-local-no-wrapper:
     name: 'Terraform Run Local No Wrapper'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -294,17 +294,17 @@ jobs:
     - name: Setup Terraform
       uses: ./
       with:
-        terraform_wrapper: false
+        opentofu_wrapper: false
 
     - name: Terraform Init
       shell: bash
-      run: terraform init
+      run: opentofu init
 
     - name: Terraform Format
       shell: bash
-      run: terraform fmt -check
+      run: opentofu fmt -check
 
     - name: Terraform Plan
       id: plan
       shell: bash
-      run: terraform plan
+      run: opentofu plan
